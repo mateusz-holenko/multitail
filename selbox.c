@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <ctype.h>
 
 #include "mt.h"
 #include "term.h"
@@ -61,7 +62,12 @@ char generate_string(char *whereto, void **list, selbox_type_t type, int wcols, 
 
 	if (type == SEL_WIN)
 	{
-		snprintf(whereto, wcols + 1, "%02d %s", index, shorten_filename(((proginfo *)list)[index].filename, wcols));
+	  char* text = ((proginfo *)list)[index].win_title;
+	  if (text == 0)
+    {
+      text = ((proginfo *)list)[index].filename;
+    }
+		snprintf(whereto, wcols + 1, "%02d %s", index, shorten_filename(text, wcols));
 		invert = ((proginfo *)list)[index].hidden | ((proginfo *)list)[index].paused;
 	}
 	else if (type == SEL_SUBWIN)
