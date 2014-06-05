@@ -84,9 +84,28 @@ char generate_string(char *whereto, void **list, selbox_type_t type, int wcols, 
 	return invert;
 }
 
+int string_fuzzy_search(char* buffer, char* compare_string)
+{
+  while (true)
+  {
+    if (*buffer == 0 || *compare_string == 0)
+    {
+      break;
+    }
+
+    buffer++;
+    if (toupper(*buffer) == toupper(*compare_string))
+    {
+      compare_string++;
+    }
+  }
+
+  return (*compare_string == 0);
+}
+
 int find_sb_string(void **list, selbox_type_t type, int nentries, char *compare_string)
 {
-	int index, len = strlen(compare_string);
+	int index;
 
 	for(index=0; index<nentries; index++)
 	{
@@ -94,8 +113,8 @@ int find_sb_string(void **list, selbox_type_t type, int nentries, char *compare_
 
 		(void)generate_string(buffer, list, type, sizeof(buffer) - 1, index);
 
-		if (strncmp(buffer, compare_string, len) == 0)
-			return index;
+	  if (string_fuzzy_search(buffer, compare_string))
+	    return index;
 	}
 
 	return -1;
